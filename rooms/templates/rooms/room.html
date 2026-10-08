@@ -1,0 +1,158 @@
+<!-- templates/base.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Hotel Management{% endblock %}</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --bg-color: #f8fafc;
+            --text-color: #1e293b;
+            --card-bg: #ffffff;
+            --border-color: #e2e8f0;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            line-height: 1.5;
+        }
+
+        nav {
+            background-color: var(--card-bg);
+            padding: 1rem 2rem;
+            box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        nav a:hover {
+            color: var(--primary);
+        }
+
+        hr {
+            display: none;
+        }
+
+        .content {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        }
+
+        h1, h2, h3 {
+            color: var(--text-color);
+            margin-top: 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        th, td {
+            padding: 0.75rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            background-color: #f1f5f9;
+            font-weight: 600;
+        }
+
+        button, .btn {
+            background-color: var(--primary);
+            color: white;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            font-weight: 500;
+            display: inline-block;
+            transition: background-color 0.2s;
+        }
+
+        button:hover, .btn:hover {
+            background-color: var(--primary-dark);
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 0.5rem;
+            margin-top: 0.25rem;
+            margin-bottom: 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        {% if user.is_authenticated %}
+            {% if user.staff_profile.role == 'manager' or user.staff_profile.role == 'housekeeping' %}
+                <a href="{% url 'room_list' %}">Rooms</a>
+            {% elif user.staff_profile.role == 'receptionist' %}
+                {% comment %} <a href="{% url 'booking_list' %}">Bookings</a> {% endcomment %}
+            {% elif user.staff_profile.role == 'finance' %}
+                {% comment %} <a href="{% url 'bill_list' %}">Billing</a> {% endcomment %}
+            {% else %}
+                <a href="{% url 'role_home' %}">Home</a>
+            {% endif %}
+            {% if user.staff_profile.role == 'manager'  %}
+                <a href="{% url 'room_create' %}">Add Room</a>
+            {% endif %}
+            {% if user.staff_profile.role == 'manager' or user.staff_profile.role == 'housekeeping' %}
+                <a href="{% url 'housekeeping_list' %}">Housekeeping</a>
+            {% endif %}
+            {% if user.staff_profile.role == 'manager' or user.staff_profile.role == 'receptionist' %}
+                <a href="{% url 'booking_list' %}">Bookings</a>
+            {% endif %}
+            {% if user.staff_profile.role == 'manager' or user.staff_profile.role == 'finance' %}
+                <a href="{% url 'bill_list' %}">Billing</a>
+            {% endif %}
+            {% if user.staff_profile.role == 'manager' %}
+                <a href="{% url 'room_type_list' %}">Room Types</a>
+            {% endif %}
+            {% if user.staff_profile.role == 'manager' or user.staff_profile.role == 'receptionist' %}
+                <a href="{% url 'customer_list' %}">Customers</a>
+            {% endif %}
+            {% if user.staff_profile.role == 'manager' %}
+                <a href="{% url 'staff_list' %}">Staff</a>
+            {% endif %}
+            <span style="margin-left: auto;">{{ user.get_username }}</span>
+            <form method="post" action="{% url 'logout' %}" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit">Log out</button>
+            </form>
+        {% else %}
+            <a href="{% url 'login' %}">Log in</a>
+        {% endif %}
+    </nav>
+
+    <div class="content">
+        {% block content %}
+        {% endblock %}
+    </div>
+</body>
+</html>

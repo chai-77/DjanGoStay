@@ -1,0 +1,38 @@
+<!-- bookings/templates/bookings/customer_list.html -->
+{% extends 'rooms/room.html' %}
+
+{% block title %}Customers{% endblock %}
+
+{% block content %}
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+        <h1 style="margin: 0;">Customers</h1>
+        {% if user.staff_profile.role == 'manager' or user.staff_profile.role == 'receptionist' %}<a href="{% url 'customer_create' %}" class="btn">Add New Customer</a>{% endif %}
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone Number</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for customer in customers %}
+                <tr>
+                    <td>
+                        <a href="{% url 'customer_detail' customer.customer_id %}" style="color: var(--primary); text-decoration: none; font-weight: 500;">
+                            {{ customer.first_name }} {{ customer.last_name }}
+                        </a>
+                    </td>
+                    <td>{{ customer.email }}</td>
+                    <td>{{ customer.phone_number }}</td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="3" style="text-align: center; color: #64748b; padding: 2rem;">No customers found.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

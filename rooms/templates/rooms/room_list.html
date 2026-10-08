@@ -1,0 +1,73 @@
+<!-- templates/rooms/room_list.html -->
+{% extends 'rooms/room.html' %}
+
+{% block title %}Room List{% endblock %}
+
+{% block content %}
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+        <h1 style="margin: 0;">Rooms</h1>
+        {% if user.staff_profile.role == 'manager'  %}<a href="{% url 'room_create' %}" class="btn">Add New Room</a>{% endif %}
+    </div>
+
+    <!-- Filter Form -->
+    <form method="get" style="background-color: #f8fafc; padding: 1.25rem; border-radius: 6px; border: 1px solid var(--border-color); margin-bottom: 2rem; display: flex; gap: 1rem; flex-wrap: wrap; align-items: flex-end;">
+        <div style="flex: 1; min-width: 150px; margin-bottom: 0;">
+            <label for="is_available" style="font-size: 0.875rem; font-weight: 500;">Status:</label>
+            <select name="is_available" id="is_available" style="margin-top: 0.25rem; margin-bottom: 0;">
+                <option value="">All</option>
+                <option value="true" {% if request.GET.is_available == 'true' %}selected{% endif %}>Available</option>
+                <option value="false" {% if request.GET.is_available == 'false' %}selected{% endif %}>Occupied</option>
+            </select>
+        </div>
+
+        <div style="flex: 1; min-width: 150px; margin-bottom: 0;">
+            <label for="room_type" style="font-size: 0.875rem; font-weight: 500;">Room Type:</label>
+            <select name="room_type" id="room_type" style="margin-top: 0.25rem; margin-bottom: 0;">
+                <option value="">All Types</option>
+                {% for rt in room_types %}
+                    <option value="{{ rt.room_type_id }}" {% if request.GET.room_type == rt.room_type_id|stringformat:"s" %}selected{% endif %}>
+                        {{ rt.room_type_name }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div style="display: flex; gap: 0.5rem; align-items: center;">
+            <button type="submit" style="margin: 0;">Filter</button>
+            <a href="{% url 'room_list' %}" class="btn" style="background-color: #64748b; margin: 0;">Reset</a>
+        </div>
+    </form>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Room Number</th>
+                <th>Type</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for room in rooms %}
+                <tr>
+                    <td>
+                        <a href="{% url 'room_detail' room.room_id %}" style="color: var(--primary); text-decoration: none; font-weight: 500;">
+                            {{ room.room_number }}
+                        </a>
+                    </td>
+                    <td>{{ room.room_type.room_type_name }}</td>
+                    <td>
+                        {% if room.is_available %}
+                            <span style="background-color: #dcfce7; color: #166534; padding: 0.25rem 0.5rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600;">Available</span>
+                        {% else %}
+                            <span style="background-color: #fee2e2; color: #991b1b; padding: 0.25rem 0.5rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600;">Occupied</span>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="3" style="text-align: center; color: #64748b; padding: 2rem;">No rooms available.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

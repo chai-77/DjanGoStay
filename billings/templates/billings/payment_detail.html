@@ -1,0 +1,39 @@
+<!-- billing/templates/billing/payment_detail.html -->
+{% extends 'rooms/room.html' %}
+
+{% block title %}Payment Details{% endblock %}
+
+{% block content %}
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+        <h1 style="margin: 0;">Payment #{{ payment.payment_id }}</h1>
+        <div>
+            <span style="background-color: #f1f5f9; color: #475569; padding: 0.35rem 0.75rem; border-radius: 9999px; font-size: 0.875rem; font-weight: 600;">{{ payment.get_payment_method_display }}</span>
+        </div>
+    </div>
+
+    <div style="background-color: #f8fafc; border: 1px solid var(--border-color); border-radius: 6px; padding: 1.5rem; margin-bottom: 2rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem;">
+        <div>
+            <span style="display: block; font-size: 0.875rem; color: #64748b; margin-bottom: 0.25rem;">Bill</span>
+            <a href="{% url 'bill_detail' payment.bill.bill_id %}" style="font-size: 1.1rem; color: var(--primary); text-decoration: none; font-weight: 600;">
+                Bill #{{ payment.bill.bill_id }}
+            </a>
+        </div>
+        <div>
+            <span style="display: block; font-size: 0.875rem; color: #64748b; margin-bottom: 0.25rem;">Amount</span>
+            <strong style="font-size: 1.1rem; color: var(--text-color);">${{ payment.amount }}</strong>
+        </div>
+        <div>
+            <span style="display: block; font-size: 0.875rem; color: #64748b; margin-bottom: 0.25rem;">Date</span>
+            <strong style="font-size: 1.1rem; color: var(--text-color);">{{ payment.date }}</strong>
+        </div>
+        <div>
+            <span style="display: block; font-size: 0.875rem; color: #64748b; margin-bottom: 0.25rem;">Status</span>
+            <strong style="font-size: 1.1rem; color: var(--text-color);">{{ payment.get_status_display }}</strong>
+    </div>
+
+    <div style="display: flex; gap: 1rem; align-items: center; border-top: 1px solid var(--border-color); padding-top: 1.5rem;">
+        {% if user.staff_profile.role == 'manager' or user.staff_profile.role == 'finance' %}<a href="{% url 'payment_update' payment.payment_id %}" class="btn">Edit Payment</a>{% endif %}
+        {% if user.staff_profile.role == 'manager' %}<a href="{% url 'payment_delete' payment.payment_id %}" class="btn" style="background-color: #dc2626;">Delete Payment</a>{% endif %}
+        <a href="{% url 'payment_list' %}" style="color: #64748b; text-decoration: none; font-weight: 500; margin-left: auto;">Back to Payments</a>
+    </div>
+{% endblock %}

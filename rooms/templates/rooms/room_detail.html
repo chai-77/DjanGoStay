@@ -1,0 +1,38 @@
+<!-- templates/rooms/room_detail.html -->
+{% extends 'rooms/room.html' %}
+
+{% block title %}{{ room.room_number }}{% endblock %}
+
+{% block content %}
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+        <h1 style="margin: 0;">{{ room.room_number }}</h1>
+        <div>
+            {% if room.is_available %}
+                <span style="background-color: #dcfce7; color: #166534; padding: 0.35rem 0.75rem; border-radius: 9999px; font-size: 0.875rem; font-weight: 600;">Available</span>
+            {% else %}
+                <span style="background-color: #fee2e2; color: #991b1b; padding: 0.35rem 0.75rem; border-radius: 9999px; font-size: 0.875rem; font-weight: 600;">Occupied</span>
+            {% endif %}
+        </div>
+    </div>
+
+    <div style="background-color: #f8fafc; border: 1px solid var(--border-color); border-radius: 6px; padding: 1.5rem; margin-bottom: 2rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem;">
+        <div>
+            <span style="display: block; font-size: 0.875rem; color: #64748b; margin-bottom: 0.25rem;">Room Type</span>
+            <strong style="font-size: 1.1rem; color: var(--text-color);">{{ room.room_type.room_type_name }}</strong>
+        </div>
+        <div>
+            <span style="display: block; font-size: 0.875rem; color: #64748b; margin-bottom: 0.25rem;">Price per Night</span>
+            <strong style="font-size: 1.1rem; color: var(--text-color);">{{ room.room_type.room_price }}</strong>
+        </div>
+        <div>
+            <span style="display: block; font-size: 0.875rem; color: #64748b; margin-bottom: 0.25rem;">Capacity</span>
+            <strong style="font-size: 1.1rem; color: var(--text-color);">{{ room.room_type.room_capacity }} persons</strong>
+        </div>
+    </div>
+
+    <div style="display: flex; gap: 1rem; align-items: center; border-top: 1px solid var(--border-color); padding-top: 1.5rem;">
+        {% if user.staff_profile.role == 'manager' or user.staff_profile.role == 'housekeeping' %}<a href="{% url 'room_update' room.room_id %}" class="btn">Edit Room</a>{% endif %}
+        {% if user.staff_profile.role == 'manager' %}<a href="{% url 'room_delete' room.room_id %}" class="btn" style="background-color: #dc2626;">Delete Room</a>{% endif %}
+        <a href="{% url 'room_list' %}" style="color: #64748b; text-decoration: none; font-weight: 500; margin-left: auto;">Back to List</a>
+    </div>
+{% endblock %}

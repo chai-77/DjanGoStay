@@ -1,0 +1,116 @@
+<!-- billing/templates/billing/bill_detail.html -->
+{% extends 'rooms/room.html' %}
+
+{% block title %}Bill Details{% endblock %}
+
+{% block content %}
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+        <h1 style="margin: 0;">Bill #{{ bill.bill_id }}</h1>
+        <div>
+            <span style="background-color: #f1f5f9; color: #475569; padding: 0.35rem 0.75rem; border-radius: 9999px; font-size: 0.875rem; font-weight: 600;">Created: {{ bill.created_at }}</span>
+        </div>
+    </div>
+
+    <div style="background-color: #f8fafc; border: 1px solid var(--border-color); border-radius: 6px; padding: 1.5rem; margin-bottom: 2rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem;">
+        <div>
+            <span style="display: block; font-size: 0.875rem; color: #64748b; margin-bottom: 0.25rem;">Booking</span>
+            <a href="{% url 'booking_detail' bill.booking.booking_id %}" style="font-size: 1.1rem; color: var(--primary); text-decoration: none; font-weight: 600;">
+                Booking #{{ bill.booking.booking_id }}
+            </a>
+        </div>
+        <div>
+            <span style="display: block; font-size: 0.875rem; color: #64748b; margin-bottom: 0.25rem;">Customer</span>
+            <strong style="font-size: 1.1rem; color: var(--text-color);">
+                <a href="{% url 'customer_detail' bill.booking.customer.customer_id %}" style="color: var(--primary); text-decoration: none;">
+                    {{ bill.booking.customer.first_name }} {{ bill.booking.customer.last_name }}
+                </a>
+            </strong>
+        </div>
+    </div>
+
+    <h3 style="margin-top: 2rem; margin-bottom: 1rem; font-size: 1.25rem; color: var(--text-color);">Charges</h3>
+    <table style="margin-bottom: 2rem;">
+        <thead>
+            <tr>
+                <th>Description</th>
+                <th>Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for charge in bill.charges.all %}
+                <tr>
+                    <td>
+                        <a href="{% url 'charge_detail' charge.charge_id %}" style="color: var(--primary); text-decoration: none; font-weight: 500;">
+                            {{ charge.description }}
+                        </a>
+                    </td>
+                    <td style="font-weight: 600; color: var(--text-color);">${{ charge.amount }}</td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="2" style="text-align: center; color: #64748b; padding: 1.5rem;">No charges added.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h3 style="margin-top: 2rem; margin-bottom: 1rem; font-size: 1.25rem; color: var(--text-color);">Discounts</h3>
+    <table style="margin-bottom: 2rem;">
+        <thead>
+            <tr>
+                <th>Description</th>
+                <th>Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for discount in bill.discounts.all %}
+                <tr>
+                    <td>
+                        <a href="{% url 'discount_detail' discount.discount_id %}" style="color: var(--primary); text-decoration: none; font-weight: 500;">
+                            {{ discount.description }}
+                        </a>
+                    </td>
+                    <td style="font-weight: 600; color: #dc2626;">-${{ discount.amount }}</td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="2" style="text-align: center; color: #64748b; padding: 1.5rem;">No discounts applied.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h3 style="margin-top: 2rem; margin-bottom: 1rem; font-size: 1.25rem; color: var(--text-color);">Payments</h3>
+    <table style="margin-bottom: 2rem;">
+        <thead>
+            <tr>
+                <th>Payment Method</th>
+                <th>Amount</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for payment in bill.payments.all %}
+                <tr>
+                    <td>
+                        <a href="{% url 'payment_detail' payment.payment_id %}" style="color: var(--primary); text-decoration: none; font-weight: 500;">
+                            {{ payment.get_payment_method_display }}
+                        </a>
+                    </td>
+                    <td style="font-weight: 600; color: var(--text-color);">${{ payment.amount }}</td>
+                    <td>{{ payment.date }}</td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="3" style="text-align: center; color: #64748b; padding: 1.5rem;">No payments recorded.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div style="display: flex; gap: 1rem; align-items: center; border-top: 1px solid var(--border-color); padding-top: 1.5rem;">
+        {% if user.staff_profile.role == 'manager' or user.staff_profile.role == 'finance' %}<a href="{% url 'bill_update' bill.bill_id %}" class="btn">Edit Bill</a>{% endif %}
+        {% if user.staff_profile.role == 'manager' %}<a href="{% url 'bill_delete' bill.bill_id %}" class="btn" style="background-color: #dc2626;">Delete Bill</a>{% endif %}
+        <a href="{% url 'bill_list' %}" style="color: #64748b; text-decoration: none; font-weight: 500; margin-left: auto;">Back to Bills</a>
+    </div>
+{% endblock %}

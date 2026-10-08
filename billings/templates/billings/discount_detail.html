@@ -1,0 +1,40 @@
+<!-- billing/templates/billing/discount_detail.html -->
+{% extends 'rooms/room.html' %}
+
+{% block title %}Discount Details{% endblock %}
+
+{% block content %}
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+        <h1 style="margin: 0;">Discount #{{ discount.discount_id }}</h1>
+        <div>
+            <span style="background-color: #fef2f2; color: #dc2626; padding: 0.35rem 0.75rem; border-radius: 9999px; font-size: 0.875rem; font-weight: 600;">-${{ discount.amount }}</span>
+        </div>
+    </div>
+
+    <div style="background-color: #f8fafc; border: 1px solid var(--border-color); border-radius: 6px; padding: 1.5rem; margin-bottom: 2rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem;">
+        <div>
+            <span style="display: block; font-size: 0.875rem; color: #64748b; margin-bottom: 0.25rem;">Bill</span>
+            <a href="{% url 'bill_detail' discount.bill.bill_id %}" style="font-size: 1.1rem; color: var(--primary); text-decoration: none; font-weight: 600;">
+                Bill #{{ discount.bill.bill_id }}
+            </a>
+        </div>
+        <div>
+            <span style="display: block; font-size: 0.875rem; color: #64748b; margin-bottom: 0.25rem;">Amount</span>
+            <strong style="font-size: 1.1rem; color: #dc2626;">-${{ discount.amount }}</strong>
+        </div>
+        <div>
+            <span style="display: block; font-size: 0.875rem; color: #64748b; margin-bottom: 0.25rem;">Description</span>
+            <strong style="font-size: 1.1rem; color: var(--text-color);">{{ discount.description }}</strong>
+        </div>
+        <div>
+            <span style="display: block; font-size: 0.875rem; color: #64748b; margin-bottom: 0.25rem;">Date</span>
+            <strong style="font-size: 1.1rem; color: var(--text-color);">{{ discount.date }}</strong>
+        </div>
+    </div>
+
+    <div style="display: flex; gap: 1rem; align-items: center; border-top: 1px solid var(--border-color); padding-top: 1.5rem;">
+        {% if user.staff_profile.role == 'manager' or user.staff_profile.role == 'finance' %}<a href="{% url 'discount_update' discount.discount_id %}" class="btn">Edit Discount</a>{% endif %}
+        {% if user.staff_profile.role == 'manager' %}<a href="{% url 'discount_delete' discount.discount_id %}" class="btn" style="background-color: #dc2626;">Delete Discount</a>{% endif %}
+        <a href="{% url 'discount_list' %}" style="color: #64748b; text-decoration: none; font-weight: 500; margin-left: auto;">Back to Discounts</a>
+    </div>
+{% endblock %}

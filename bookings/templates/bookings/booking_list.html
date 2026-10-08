@@ -1,0 +1,52 @@
+<!-- bookings/templates/bookings/booking_list.html -->
+{% extends 'rooms/room.html' %}
+
+{% block title %}Bookings{% endblock %}
+
+{% block content %}
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+        <h1 style="margin: 0;">Bookings</h1>
+        {% if user.staff_profile.role == 'manager' or user.staff_profile.role == 'receptionist' %}<a href="{% url 'booking_create' %}" class="btn">New Booking</a>{% endif %}
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Booking ID</th>
+                <th>Customer</th>
+                <th>Room</th>
+                <th>Check-In</th>
+                <th>Check-Out</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for booking in bookings %}
+                <tr>
+                    <td>
+                        <a href="{% url 'booking_detail' booking.booking_id %}" style="color: var(--primary); text-decoration: none; font-weight: 500;">
+                            #{{ booking.booking_id }}
+                        </a>
+                    </td>
+                    <td>{{ booking.customer.first_name }} {{ booking.customer.last_name }}</td>
+                    <td>Room {{ booking.room.room_number }}</td>
+                    <td>{{ booking.check_in_date }}</td>
+                    <td>{{ booking.check_out_date }}</td>
+                    <td>
+                        {% if booking.status == 'confirmed' or booking.status == 'checked_in' %}
+                            <span style="background-color: #dcfce7; color: #166534; padding: 0.25rem 0.5rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600;">{{ booking.get_status_display }}</span>
+                        {% elif booking.status == 'canceled' or booking.status == 'checked_out' %}
+                            <span style="background-color: #f1f5f9; color: #475569; padding: 0.25rem 0.5rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600;">{{ booking.get_status_display }}</span>
+                        {% else %}
+                            <span style="background-color: #fef9c3; color: #854d0e; padding: 0.25rem 0.5rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600;">{{ booking.get_status_display }}</span>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="6" style="text-align: center; color: #64748b; padding: 2rem;">No bookings found.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

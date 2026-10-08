@@ -1,0 +1,8 @@
+{% extends 'rooms/room.html' %}
+
+{% block title %}Staff Home{% endblock %}
+
+{% block content %}
+    <h1>Welcome, {{ user.get_username }}</h1>
+    <p>Your role does not currently have any application modules assigned.</p>
+{% endblock %}

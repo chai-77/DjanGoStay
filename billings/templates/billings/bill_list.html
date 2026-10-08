@@ -1,0 +1,42 @@
+<!-- billing/templates/billing/bill_list.html -->
+{% extends 'rooms/room.html' %}
+
+{% block title %}Bills{% endblock %}
+
+{% block content %}
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+        <h1 style="margin: 0;">Bills</h1>
+        {% if user.staff_profile.role == 'manager' or user.staff_profile.role == 'finance' %}<a href="{% url 'bill_create' %}" class="btn">Create New Bill</a>{% endif %}
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Bill ID</th>
+                <th>Booking ID</th>
+                <th>Created At</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for bill in bills %}
+                <tr>
+                    <td>
+                        <a href="{% url 'bill_detail' bill.bill_id %}" style="color: var(--primary); text-decoration: none; font-weight: 500;">
+                            Bill #{{ bill.bill_id }}
+                        </a>
+                    </td>
+                    <td>
+                        <a href="{% url 'booking_detail' bill.booking.booking_id %}" style="color: var(--primary); text-decoration: none; font-weight: 500;">
+                            Booking #{{ bill.booking.booking_id }}
+                        </a>
+                    </td>
+                    <td>{{ bill.created_at }}</td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="3" style="text-align: center; color: #64748b; padding: 2rem;">No bills found.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

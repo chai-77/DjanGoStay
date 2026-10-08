@@ -1,0 +1,40 @@
+<!-- staff/templates/staff/staff_detail.html -->
+{% extends 'rooms/room.html' %}
+
+{% block title %}{{ staff.first_name }} {{ staff.last_name }}{% endblock %}
+
+{% block content %}
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+        <h1 style="margin: 0;">{{ staff.first_name }} {{ staff.last_name }}</h1>
+        <div>
+            <span style="background-color: #e0f2fe; color: #0369a1; padding: 0.35rem 0.75rem; border-radius: 9999px; font-size: 0.875rem; font-weight: 600;">{{ staff.get_role_display }}</span>
+        </div>
+    </div>
+
+    <div style="background-color: #f8fafc; border: 1px solid var(--border-color); border-radius: 6px; padding: 1.5rem; margin-bottom: 2rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem;">
+        <div>
+            <span style="display: block; font-size: 0.875rem; color: #64748b; margin-bottom: 0.25rem;">Phone</span>
+            <strong style="font-size: 1.1rem; color: var(--text-color);">{{ staff.phone_number }}</strong>
+        </div>
+        <div>
+            <span style="display: block; font-size: 0.875rem; color: #64748b; margin-bottom: 0.25rem;">Salary</span>
+            <strong style="font-size: 1.1rem; color: var(--text-color);">${{ staff.salary }}</strong>
+        </div>
+        <div>
+            <span style="display: block; font-size: 0.875rem; color: #64748b; margin-bottom: 0.25rem;">Date of Joining</span>
+            <strong style="font-size: 1.1rem; color: var(--text-color);">{{ staff.date_of_joining }}</strong>
+        </div>
+        <div>
+            <span style="display: block; font-size: 0.875rem; color: #64748b; margin-bottom: 0.25rem;">User Account</span>
+            <strong style="font-size: 1.1rem; color: var(--text-color);">{{ staff.user.username }}</strong>
+        </div>
+    </div>
+
+    <div style="display: flex; gap: 1rem; align-items: center; border-top: 1px solid var(--border-color); padding-top: 1.5rem;">
+        {% if user.staff_profile.role == 'manager' %}
+            <a href="{% url 'staff_update' staff.staff_id %}" class="btn">Edit Staff</a>
+            <a href="{% url 'staff_delete' staff.staff_id %}" class="btn" style="background-color: #dc2626;">Delete Staff</a>
+        {% endif %}
+        <a href="{% url 'staff_list' %}" style="color: #64748b; text-decoration: none; font-weight: 500; margin-left: auto;">Back to Staff List</a>
+    </div>
+{% endblock %}

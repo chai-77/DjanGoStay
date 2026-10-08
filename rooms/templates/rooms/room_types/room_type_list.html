@@ -1,0 +1,38 @@
+<!-- rooms/templates/rooms/room_type_list.html -->
+{% extends 'rooms/room.html' %}
+
+{% block title %}Room Types{% endblock %}
+
+{% block content %}
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+        <h1 style="margin: 0;">Room Types</h1>
+        {% if user.staff_profile.role == 'manager' %}<a href="{% url 'room_type_create' %}" class="btn">Add New Room Type</a>{% endif %}
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Room Type Name</th>
+                <th>Price per Night</th>
+                <th>Capacity</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for rt in room_types %}
+                <tr>
+                    <td>
+                        <a href="{% url 'room_type_detail' rt.room_type_id %}" style="color: var(--primary); text-decoration: none; font-weight: 500;">
+                            {{ rt.room_type_name }}
+                        </a>
+                    </td>
+                    <td>{{ rt.room_price }}</td>
+                    <td>{{ rt.room_capacity }} persons</td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="3" style="text-align: center; color: #64748b; padding: 2rem;">No room types found.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

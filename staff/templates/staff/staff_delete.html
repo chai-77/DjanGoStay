@@ -1,0 +1,20 @@
+<!-- staff/templates/staff/staff_confirm_delete.html -->
+{% extends 'rooms/room.html' %}
+
+{% block title %}Delete Staff{% endblock %}
+
+{% block content %}
+    <h1 style="color: #dc2626; margin-bottom: 1rem;">Delete Staff Member</h1>
+    
+    <div style="background-color: #fef2f2; border: 1px solid #fecaca; border-radius: 6px; padding: 1.5rem; margin-bottom: 2rem;">
+        <p style="margin: 0; color: #991b1b; font-size: 1.1rem;">
+            Are you sure you want to delete staff member <strong>{{ staff.first_name }} {{ staff.last_name }}</strong>? This action cannot be undone.
+        </p>
+    </div>
+
+    <form method="post" style="display: flex; gap: 1rem; align-items: center;">
+        {% csrf_token %}
+        <button type="submit" class="btn" style="background-color: #dc2626; margin: 0;">Confirm Delete</button>
+        <a href="{% url 'staff_detail' staff.staff_id %}" style="color: #64748b; text-decoration: none; font-weight: 500;">Cancel</a>
+    </form>
+{% endblock %}

@@ -1,0 +1,21 @@
+<!-- bookings/templates/bookings/booking_form.html -->
+{% extends 'rooms/room.html' %}
+
+{% block title %}{{ action }} Booking{% endblock %}
+
+{% block content %}
+    <h1 style="margin-bottom: 1.5rem;">{{ action }} Booking</h1>
+    
+    <form method="post" style="max-width: 600px;">
+        {% csrf_token %}
+        
+        <div class="form-container">
+            {{ form.as_p }}
+        </div>
+
+        <div style="display: flex; gap: 1rem; align-items: center; margin-top: 1.5rem;">
+            <button type="submit" style="margin: 0;">Save</button>
+            <a href="{% url 'booking_list' %}" style="color: #64748b; text-decoration: none; font-weight: 500;">Cancel</a>
+        </div>
+    </form>
+{% endblock %}
